@@ -1,4 +1,6 @@
+import unicodedata
 from random import randrange
+import unidecode
 
 categories_list = []
 count_tries = 0
@@ -9,35 +11,35 @@ username = ''
 
 def create_categories_list():
     categories_list.append('sport')
-    categories_list.append('orase')
+    categories_list.append('orașe')
     categories_list.append('sentimente')
-    categories_list.append('masini')
+    categories_list.append('mașini')
     categories_list.append('plante')
-    categories_list.append('fauna')
+    categories_list.append('faună')
 
 
 def print_games_rules():
-    print(f'Buna, ' + username + '!')
+    print(f'Bună, ' + username + '!')
     print(f'''Spânzurătoarea este un joc pentru doi jucători. 
-    Jucatorul uman va alege o categorie dintr-o lista si va trebui sa ghiceasca cuvantul ales random sugerand litere.
+    Jucătorul uman va alege o categorie dintr-o listă și va trebui să ghicească cuvantul ales random sugerând litere.
     Cuvântul ce trebuie ghicit este reprezentat de un șir de linii, fiecare linie reprezentând o literă a cuvântului. 
     Dacă jucătorul uman sugerează o literă ce se află în cuvânt, boot-ul o completează pe toate pozițiile unde aceasta apare. 
-    Dacă litera nu se află în cuvânt, boot-ul va contoriza numarul de incercari ramase (in functie de lungimea cuvantului).
-    La final, se va afisa cuvantul si numarul de incercari esuate.\n''')
+    Dacă litera nu se află în cuvânt, boot-ul va contoriza numărul de încercări rămase (în funcție de lungimea cuvântului).
+    La final, se va afișa cuvântul și numărul de incercări eșuate.\n''')
 
 
 def print_category_list():
     print(f'''Categorii:
     1. Sport
-    2. Orase
+    2. Orașe
     3. Sentimente
-    4. Masini
+    4. Mașini
     5. Plante
-    6. Fauna''')
+    6. Faună''')
 
 
 def read_category():
-    var = input("Alege o categorie din lista de mai sus... \n")
+    var = input("Alegeți o categorie din lista de mai sus... \n")
     return var
 
 
@@ -48,15 +50,22 @@ def return_words_array(file):
 
 def return_random_word(given_category):
     for category in categories_list:
-        if given_category == category:
-            file = open("files/" + given_category + ".txt", "r")
+        if given_category == category or given_category.lower() == category or given_category == unidecode.unidecode(
+                category):
+            file = open("files/categorii/" + category + ".txt", encoding="utf8")
             words_array = return_words_array(file)
             count_words = len(words_array)
             choose_word = words_array[randrange(count_words)]
             return choose_word
-    print(f'Nu exista aceasta categorie...\n')
+    print(f'Nu există această categorie...\n')
     another_category = read_category()
     return_random_word(another_category)
+
+
+def remove_accents(input_str):
+    nfkd_form = unicodedata.normalize('NFKD', input_str)
+    only_ascii = nfkd_form.encode('ASCII', 'ignore')
+    return only_ascii
 
 
 def generate_word_for_player(choose_word):
@@ -65,9 +74,9 @@ def generate_word_for_player(choose_word):
 
 
 def read_letter_from_player():
-    var = input("Introdu o litera... \n")
-    while len(var) > 1:
-        var = input("Introdu o singura litera... \n")
+    var = input("Introduceți o literă... \n")
+    while len(var) > 1 and var.isnumeric():
+        var = input("Introduceți o singură literă... \n")
     return var
 
 
@@ -80,7 +89,7 @@ def replace_lines(letter, new_word):
 
 
 def create_user():
-    username = input("Inainte de a incepe alege un username: \n")
+    username = input("Înainte de a începe alegeți un username: \n")
     return username
 
 
@@ -100,13 +109,12 @@ if __name__ == '__main__':
     new_word = generate_word_for_player(choose_word)
     count_total_tries = 2 * len(new_word)
     while count_tries < count_total_tries and new_word != choose_word:
-        print(new_word + '\tnumar incercari: ' + str(count_total_tries - count_tries))
+        print(new_word + '\tnumăr incercări: ' + str(count_total_tries - count_tries))
         letter = read_letter_from_player()
         new_new_word = replace_lines(letter, new_word)
         if new_new_word == new_word:
             count_failed_tries += 1
         new_word = new_new_word
         count_tries += 1
-    print(new_word)
-    print(choose_word + '\tnumar incercari esuate: ' + str(count_failed_tries))
+    print(choose_word + '\tnumăr incerări eșuate: ' + str(count_failed_tries))
     save_score(username, count_failed_tries, count_total_tries)
