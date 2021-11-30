@@ -1,4 +1,3 @@
-import unicodedata
 from random import randrange
 import unidecode
 
@@ -60,12 +59,6 @@ def return_random_word(given_category):
     print(f'Nu există această categorie...\n')
     another_category = read_category()
     return_random_word(another_category)
-
-
-def remove_accents(input_str):
-    nfkd_form = unicodedata.normalize('NFKD', input_str)
-    only_ascii = nfkd_form.encode('ASCII', 'ignore')
-    return only_ascii
 
 
 def generate_word_for_player(choose_word):
