@@ -22,8 +22,8 @@ def print_games_rules():
     print(f'''Spânzurătoarea este un joc pentru doi jucători. 
     Jucătorul uman va alege o categorie dintr-o listă și va trebui să ghicească cuvantul ales random sugerând litere.
     Cuvântul ce trebuie ghicit este reprezentat de un șir de linii, fiecare linie reprezentând o literă a cuvântului. 
-    Dacă jucătorul uman sugerează o literă ce se află în cuvânt, boot-ul o completează pe toate pozițiile unde aceasta apare. 
-    Dacă litera nu se află în cuvânt, boot-ul va contoriza numărul de încercări rămase (în funcție de lungimea cuvântului).
+    Dacă jucătorul uman sugerează o literă ce se află în cuvânt, bot-ul o completează pe toate pozițiile unde aceasta apare. 
+    Dacă litera nu se află în cuvânt, bot-ul va contoriza numărul de încercări rămase (în funcție de lungimea cuvântului).
     La final, se va afișa cuvântul și numărul de incercări eșuate.\n''')
 
 
@@ -68,7 +68,7 @@ def generate_word_for_player(choose_word):
 
 def read_letter_from_player():
     var = input("Introduceți o literă... \n")
-    while len(var) > 1 and var.isnumeric():
+    while len(var) > 1 or var.isnumeric():
         var = input("Introduceți o singură literă... \n")
     return var
 
@@ -88,7 +88,8 @@ def create_user():
 
 def save_score(username, count_failed_tries, count_total_tries):
     f = open("files/scor.txt", "a")
-    f.write('\n' + username + '\t' + str(count_failed_tries) + '\\' + str(count_total_tries))
+    f.write('\n' + username + '\t' + str(count_total_tries - count_failed_tries) + '\\' + str(
+        count_total_tries) + ' litere corecte')
     f.close()
 
 
